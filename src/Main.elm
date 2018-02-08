@@ -2,7 +2,6 @@ module Main exposing (..)
 
 import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
--- import List exposing (..)
 import Set exposing (..)
 
 
@@ -39,7 +38,7 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        model2 =
+        newModel =
             case msg of
                 ChooseLetter letter ->
                     let
@@ -59,7 +58,7 @@ update msg model =
                                     model.badGuesses
                         }
     in
-        ( model2, Cmd.none )
+        ( newModel, Cmd.none )
 
 
 
