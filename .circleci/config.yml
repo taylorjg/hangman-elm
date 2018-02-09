@@ -7,17 +7,17 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        keys:
-          - v1-dependencies-{{ checksum "elm-package.json" }}-{{ checksum "package.json" }}
-          - v1-dependencies-
+          keys:
+            - v1-dependencies-{{ checksum "elm-package.json" }}-{{ checksum "package.json" }}
+            - v1-dependencies-
       - run: yarn install
       - run: npx elm-app build
       - save_cache:
-        key: v1-dependencies-{{ checksum "elm-package.json" }}-{{ checksum "package.json" }}
-        paths:
-          - elm-stuff
-          - tests/elm-stuff
-          - node_modules
+          key: v1-dependencies-{{ checksum "elm-package.json" }}-{{ checksum "package.json" }}
+          paths:
+            - elm-stuff
+            - tests/elm-stuff
+            - node_modules
       - run: npx elm-app test
   deploy-job:
     docker:
