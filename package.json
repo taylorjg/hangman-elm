@@ -1,10 +1,10 @@
 {
   "name": "hangman-elm",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Hangman in Elm",
   "scripts": {
     "test": "elm-app test",
-    "heroku-postbuild": "npm install create-elm-app && elm-app build && mv build server/public"
+    "heroku-postbuild": "elm-app build && mv build server/public"
   },
   "repository": {
     "type": "git",
@@ -13,6 +13,7 @@
   "author": "Jonathan Taylor",
   "license": "MIT",
   "dependencies": {
+    "create-elm-app": "^1.10.2",
     "express": "^4.16.2"
   }
 }
