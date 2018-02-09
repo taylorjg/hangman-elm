@@ -1,6 +1,6 @@
 {
   "name": "hangman-elm",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Hangman in Elm",
   "scripts": {
     "test": "elm-app test",

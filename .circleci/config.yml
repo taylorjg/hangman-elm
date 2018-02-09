@@ -6,9 +6,19 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run: sudo yarn global add create-elm-app --no-progress
-      - run: elm-app build
-      - run: elm-app test
+      - restore_cache:
+        keys:
+          - v1-dependencies-{{ checksum "elm-package.json" }}-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - run: yarn install
+      - run: npx elm-app build
+      - save_cache:
+        key: v1-dependencies-{{ checksum "elm-package.json" }}-{{ checksum "package.json" }}
+        paths:
+          - elm-stuff
+          - tests/elm-stuff
+          - node_modules
+      - run: npx elm-app test
   deploy-job:
     docker:
       - image: circleci/node:7.10
