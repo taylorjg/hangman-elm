@@ -6,6 +6,6 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run: npm install create-elm-app
-      - run: node_modules/.bin/elm-app build
-      # - run: elm-app test
+      - run: yarn global add create-elm-app
+      - run: elm-app build
+      - run: elm-app test
