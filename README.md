@@ -5,6 +5,23 @@
 This is my first foray into Elm programming.
 This is (or will be) an Elm version of a [hangman React app](https://github.com/taylorjg/hangman) that I wrote recently.
 
+# TODO
+
+* add gameState (InProgress / GameOver)
+* only process ChooseLetter msg when InProgress
+* when GameOver, display a NewGame button
+* add NewGame msg and send it on NewGame button click
+* handle NewGame msg - choose a random word from a small hardcoded dictionary
+* choose a random word on startup too
+* add keyboard support for A-Z buttons
+* ignore non A-Z keyboard input
+* set focus to NewGame button when displaying it
+* display remaining lives count
+* display SVG drawing of gallows
+* get random word via an AJAX call (add new ChoosingWord gameState)
+* display spinner whilst AJAX call is outstanding
+* handle AJAX errors by falling back to local dictionary again
+
 # Installation
 
 I encountered a problem trying to install `create-elm-app` globally:
