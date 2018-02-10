@@ -1,18 +1,17 @@
 module Main exposing (..)
 
 import Html exposing (Html, button, div, text)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, classList)
 import Html.Events exposing (onClick)
 import Set exposing (..)
+
+
+-- MODEL
 
 
 alphabet : String
 alphabet =
     "ABCDEFGHIJKLMOPQRSTUVWXYZ"
-
-
-
--- MODEL
 
 
 type alias Flags =
@@ -30,11 +29,7 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { version = flags.version
-      , word = "ELM"
-      , goodGuesses = Set.empty
-      , badGuesses = Set.empty
-      }
+    ( Model flags.version "ELM" Set.empty Set.empty
     , Cmd.none
     )
 
@@ -74,7 +69,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] (version model :: word model :: letters ++ [ badChoices model ])
+    div [] <| version model :: word model :: letters model
 
 
 version : Model -> Html Msg
@@ -82,17 +77,28 @@ version { version } =
     div [ class "version" ] [ text version ]
 
 
-letters : List (Html Msg)
-letters =
-    String.toList alphabet
-        |> List.map (\letter -> button [ onClick (ChooseLetter letter) ] [ text <| String.fromChar letter ])
+letters : Model -> List (Html Msg)
+letters model =
+    List.map (letterButton model) (String.toList alphabet)
 
 
-badChoices : Model -> Html Msg
-badChoices { badGuesses } =
-    Set.toList badGuesses
-        |> List.map (String.fromChar >> text)
-        |> div []
+letterButton : Model -> Char -> Html Msg
+letterButton { goodGuesses, badGuesses } letter =
+    let
+        classes =
+            classList
+                [ ( "letter"
+                  , True
+                  )
+                , ( "letter-correct"
+                  , Set.member letter goodGuesses
+                  )
+                , ( "letter-incorrect"
+                  , Set.member letter badGuesses
+                  )
+                ]
+    in
+        button [ onClick (ChooseLetter letter), classes ] [ text <| String.fromChar letter ]
 
 
 word : Model -> Html Msg

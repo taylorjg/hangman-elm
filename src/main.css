@@ -18,3 +18,18 @@ img {
   font-size: smaller;
   font-style: italic;
 }
+
+.letter {
+  font-family: Courier New, Courier, monospace;
+  margin: 2px;
+}
+
+.letter-correct {
+  color: #00ff00;
+  background-color: #00ff0020;
+}
+
+.letter-incorrect {
+  color: #ff0000;
+  background-color: #ff000020;
+}
