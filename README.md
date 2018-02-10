@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/taylorjg/hangman-elm/tree/master.svg?style=svg)](https://circleci.com/gh/taylorjg/hangman-elm/tree/master)
+
 # Description
 
 This is my first foray into Elm programming.
