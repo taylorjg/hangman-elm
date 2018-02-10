@@ -37,28 +37,27 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        newModel =
-            case msg of
-                ChooseLetter letter ->
-                    let
-                        correct =
-                            List.member letter (String.toList model.word)
-                    in
-                        { model
-                            | goodGuesses =
-                                if correct then
-                                    Set.insert letter model.goodGuesses
-                                else
-                                    model.goodGuesses
-                            , badGuesses =
-                                if not correct then
-                                    Set.insert letter model.badGuesses
-                                else
-                                    model.badGuesses
-                        }
-    in
-        ( newModel, Cmd.none )
+    case msg of
+        ChooseLetter letter ->
+            let
+                goodLetter =
+                    List.member letter (String.toList model.word)
+
+                newModel =
+                    { model
+                        | goodGuesses =
+                            if goodLetter then
+                                Set.insert letter model.goodGuesses
+                            else
+                                model.goodGuesses
+                        , badGuesses =
+                            if not goodLetter then
+                                Set.insert letter model.badGuesses
+                            else
+                                model.badGuesses
+                    }
+            in
+                ( newModel, Cmd.none )
 
 
 

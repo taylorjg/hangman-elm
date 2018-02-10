@@ -2,21 +2,33 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-
-
--- Check out http://package.elm-lang.org/packages/elm-community/elm-test/latest to learn more about testing in Elm!
+import Set
+import Main
 
 
 all : Test
 all =
-    describe "A Test Suite"
-        [ test "Addition" <|
+    describe "Model tests"
+        [ test "Choosing a correct letter" <|
             \_ ->
-                Expect.equal 11 (4 + 7)
-        , test "String.left" <|
+                Main.init
+                    |> Tuple.first
+                    |> Main.update (Main.ChooseLetter 'E')
+                    |> Tuple.first
+                    |> Expect.equal
+                        { word = "ELM"
+                        , goodGuesses = Set.singleton 'E'
+                        , badGuesses = Set.empty
+                        }
+        , test "Choosing an incorrect letter" <|
             \_ ->
-                Expect.equal "a" (String.left 1 "abcdefg")
-        -- , test "This test should fail" <|
-        --     \_ ->
-        --         Expect.fail "failed as expected!"
+                Main.init
+                    |> Tuple.first
+                    |> Main.update (Main.ChooseLetter 'B')
+                    |> Tuple.first
+                    |> Expect.equal
+                        { word = "ELM"
+                        , goodGuesses = Set.empty
+                        , badGuesses = Set.singleton 'B'
+                        }
         ]
