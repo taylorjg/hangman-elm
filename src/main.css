@@ -13,3 +13,8 @@ img {
   margin: 20px 0;
   max-width: 200px;
 }
+
+.version {
+  font-size: smaller;
+  font-style: italic;
+}

@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (Html, button, div, text)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Set exposing (..)
 
@@ -14,16 +15,23 @@ alphabet =
 -- MODEL
 
 
+type alias Flags =
+    { version : String
+    }
+
+
 type alias Model =
-    { word : String
+    { version : String
+    , word : String
     , goodGuesses : Set Char
     , badGuesses : Set Char
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( { word = "ELM"
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( { version = flags.version
+      , word = "ELM"
       , goodGuesses = Set.empty
       , badGuesses = Set.empty
       }
@@ -66,7 +74,12 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] (word model :: letters model ++ [ badChoices model ])
+    div [] (version model :: word model :: letters model ++ [ badChoices model ])
+
+
+version : Model -> Html Msg
+version model =
+    div [ class "version" ] [ text model.version ]
 
 
 letters : Model -> List (Html Msg)
@@ -103,9 +116,9 @@ maskWord word goodGuesses =
 ---- PROGRAM ----
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { view = view
         , init = init
         , update = update
