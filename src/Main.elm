@@ -74,30 +74,30 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] (version model :: word model :: letters model ++ [ badChoices model ])
+    div [] (version model :: word model :: letters ++ [ badChoices model ])
 
 
 version : Model -> Html Msg
-version model =
-    div [ class "version" ] [ text model.version ]
+version { version } =
+    div [ class "version" ] [ text version ]
 
 
-letters : Model -> List (Html Msg)
-letters model =
+letters : List (Html Msg)
+letters =
     String.toList alphabet
-        |> List.map (\letter -> button [ onClick (ChooseLetter letter) ] [ text (String.fromChar letter) ])
+        |> List.map (\letter -> button [ onClick (ChooseLetter letter) ] [ text <| String.fromChar letter ])
 
 
 badChoices : Model -> Html Msg
-badChoices model =
-    Set.toList model.badGuesses
+badChoices { badGuesses } =
+    Set.toList badGuesses
         |> List.map (String.fromChar >> text)
         |> div []
 
 
 word : Model -> Html Msg
-word model =
-    div [] [ text (maskWord model.word model.goodGuesses) ]
+word { word, goodGuesses } =
+    div [] [ text <| maskWord word goodGuesses ]
 
 
 maskWord : String -> Set Char -> String

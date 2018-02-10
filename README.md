@@ -7,6 +7,8 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 
 # TODO
 
+* correctly chosen letters should have disabled green buttons
+* incorrectly chosen letters should have disabled red buttons
 * add gameState (InProgress / GameOver)
 * only process ChooseLetter msg when InProgress
 * when GameOver, display a NewGame button
