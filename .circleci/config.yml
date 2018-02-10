@@ -3,7 +3,7 @@ version: 2
 jobs:
   build-job:
     docker:
-      - image: taylorjg/circleci-create-elm-app
+      - image: taylorjg/circleci-create-elm-app:v1
     working_directory: ~/repo
     steps:
       - checkout
@@ -20,7 +20,7 @@ jobs:
       - run: npx elm-app test
   deploy-job:
     docker:
-      - image: taylorjg/circleci-create-elm-app
+      - image: taylorjg/circleci-create-elm-app:v1
     working_directory: ~/repo
     steps:
       - checkout
