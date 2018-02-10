@@ -12,12 +12,13 @@ jobs:
             - v1-dependencies-{{ checksum "elm-package.json" }}
             - v1-dependencies-
       - run: npx elm-app build
+      - run: npx elm-app test
       - save_cache:
           key: v1-dependencies-{{ checksum "elm-package.json" }}
           paths:
             - elm-stuff
             - tests/elm-stuff
-      - run: npx elm-app test
+            
   deploy-job:
     docker:
       - image: taylorjg/circleci-create-elm-app:v1
