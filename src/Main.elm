@@ -1,9 +1,10 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (class, classList, disabled)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, on, keyCode)
 import Set exposing (..)
+import Char
 
 
 -- MODEL
@@ -36,6 +37,7 @@ init flags =
 
 type Msg
     = ChooseLetter Char
+    | BodyKeyPress Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -62,6 +64,13 @@ update msg model =
             in
                 ( newModel, Cmd.none )
 
+        BodyKeyPress code ->
+            let
+                msg =
+                    (Char.fromCode >> Char.toUpper >> ChooseLetter) code
+            in
+                update msg model
+
 
 
 -- VIEW
@@ -69,7 +78,10 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] <| viewVersion model :: viewWord model :: viewLetters model
+    div [] <|
+        viewVersion model
+            :: viewWord model
+            :: viewLetters model
 
 
 viewVersion : Model -> Html Msg
@@ -130,6 +142,18 @@ maskWord word goodGuesses =
 
 
 
+---- SUBSCRIPTION ----
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    bodyKeyPress BodyKeyPress
+
+
+port bodyKeyPress : (Int -> msg) -> Sub msg
+
+
+
 ---- PROGRAM ----
 
 
@@ -139,5 +163,5 @@ main =
         { view = view
         , init = init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
