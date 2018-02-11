@@ -35,6 +35,26 @@ init flags =
     )
 
 
+type LetterDisposition
+    = Available
+    | Good
+    | Bad
+
+
+getLetterDisposition : Model -> Char -> LetterDisposition
+getLetterDisposition { goodGuesses, badGuesses } letter =
+    if (Set.member letter goodGuesses) then
+        Good
+    else if (Set.member letter badGuesses) then
+        Bad
+    else
+        Available
+
+
+
+-- UPDATE
+
+
 type Msg
     = ChooseLetter Char
     | BodyKeyPress Int
@@ -100,31 +120,28 @@ viewLetters model =
 
 
 viewLetter : Model -> Char -> Html Msg
-viewLetter { goodGuesses, badGuesses } letter =
+viewLetter model letter =
     let
-        good =
-            Set.member letter goodGuesses
+        letterDisposition =
+            getLetterDisposition model letter
 
-        bad =
-            Set.member letter badGuesses
-
-        class =
+        classes =
             classList
                 [ ( "letter"
                   , True
                   )
                 , ( "letter-good"
-                  , good
+                  , letterDisposition == Good
                   )
                 , ( "letter-bad"
-                  , bad
+                  , letterDisposition == Bad
                   )
                 ]
     in
         button
             [ onClick <| ChooseLetter letter
-            , disabled <| good || bad
-            , class
+            , disabled <| letterDisposition /= Available
+            , classes
             ]
             [ text <| String.fromChar letter ]
 
