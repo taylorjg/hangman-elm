@@ -33,4 +33,16 @@ all =
                         , goodGuesses = Set.empty
                         , badGuesses = Set.singleton 'B'
                         }
+        , test "Choosing an invalid character" <|
+            \_ ->
+                Main.init { version = "1" }
+                    |> Tuple.first
+                    |> Main.update (Main.ChooseLetter '?')
+                    |> Tuple.first
+                    |> Expect.equal
+                        { version = "1"
+                        , word = "ELM"
+                        , goodGuesses = Set.empty
+                        , badGuesses = Set.empty
+                        }
         ]

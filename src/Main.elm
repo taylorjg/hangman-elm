@@ -10,9 +10,9 @@ import Char
 -- MODEL
 
 
-alphabet : String
+alphabet : List Char
 alphabet =
-    "ABCDEFGHIJKLMOPQRSTUVWXYZ"
+    String.toList "ABCDEFGHIJKLMOPQRSTUVWXYZ"
 
 
 type alias Flags =
@@ -41,6 +41,12 @@ type LetterDisposition
     | Bad
 
 
+type ChoiceDisposition
+    = Correct
+    | Incorrect
+    | Invalid
+
+
 getLetterDisposition : Model -> Char -> LetterDisposition
 getLetterDisposition { goodGuesses, badGuesses } letter =
     if (Set.member letter goodGuesses) then
@@ -49,6 +55,19 @@ getLetterDisposition { goodGuesses, badGuesses } letter =
         Bad
     else
         Available
+
+
+getChoiceDisposition : Model -> Char -> ChoiceDisposition
+getChoiceDisposition { word } letter =
+    case ( List.member letter alphabet, List.member letter (String.toList word) ) of
+        ( True, True ) ->
+            Correct
+
+        ( True, False ) ->
+            Incorrect
+
+        ( False, _ ) ->
+            Invalid
 
 
 
@@ -65,18 +84,18 @@ update msg model =
     case msg of
         ChooseLetter letter ->
             let
-                good =
-                    List.member letter (String.toList model.word)
+                choiceDisposition =
+                    getChoiceDisposition model letter
 
                 newModel =
                     { model
                         | goodGuesses =
-                            if good then
+                            if choiceDisposition == Correct then
                                 Set.insert letter model.goodGuesses
                             else
                                 model.goodGuesses
                         , badGuesses =
-                            if not good then
+                            if choiceDisposition == Incorrect then
                                 Set.insert letter model.badGuesses
                             else
                                 model.badGuesses
@@ -116,7 +135,7 @@ viewWord { word, goodGuesses } =
 
 viewLetters : Model -> List (Html Msg)
 viewLetters model =
-    List.map (viewLetter model) (String.toList alphabet)
+    List.map (viewLetter model) alphabet
 
 
 viewLetter : Model -> Char -> Html Msg
