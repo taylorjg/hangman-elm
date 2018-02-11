@@ -24,12 +24,12 @@ img {
   margin: 2px;
 }
 
-.letter-correct {
+.letter-good {
   color: #00ff00;
   background-color: #00ff0020;
 }
 
-.letter-incorrect {
+.letter-bad {
   color: #ff0000;
   background-color: #ff000020;
 }

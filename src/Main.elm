@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (Html, button, div, text)
-import Html.Attributes exposing (class, classList)
+import Html.Attributes exposing (class, classList, disabled)
 import Html.Events exposing (onClick)
 import Set exposing (..)
 
@@ -43,18 +43,18 @@ update msg model =
     case msg of
         ChooseLetter letter ->
             let
-                goodLetter =
+                good =
                     List.member letter (String.toList model.word)
 
                 newModel =
                     { model
                         | goodGuesses =
-                            if goodLetter then
+                            if good then
                                 Set.insert letter model.goodGuesses
                             else
                                 model.goodGuesses
                         , badGuesses =
-                            if not goodLetter then
+                            if not good then
                                 Set.insert letter model.badGuesses
                             else
                                 model.badGuesses
@@ -69,41 +69,52 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] <| version model :: word model :: letters model
+    div [] <| viewVersion model :: viewWord model :: viewLetters model
 
 
-version : Model -> Html Msg
-version { version } =
+viewVersion : Model -> Html Msg
+viewVersion { version } =
     div [ class "version" ] [ text version ]
 
 
-letters : Model -> List (Html Msg)
-letters model =
-    List.map (letterButton model) (String.toList alphabet)
+viewWord : Model -> Html Msg
+viewWord { word, goodGuesses } =
+    div [] [ text <| maskWord word goodGuesses ]
 
 
-letterButton : Model -> Char -> Html Msg
-letterButton { goodGuesses, badGuesses } letter =
+viewLetters : Model -> List (Html Msg)
+viewLetters model =
+    List.map (viewLetter model) (String.toList alphabet)
+
+
+viewLetter : Model -> Char -> Html Msg
+viewLetter { goodGuesses, badGuesses } letter =
     let
-        classes =
+        good =
+            Set.member letter goodGuesses
+
+        bad =
+            Set.member letter badGuesses
+
+        class =
             classList
                 [ ( "letter"
                   , True
                   )
-                , ( "letter-correct"
-                  , Set.member letter goodGuesses
+                , ( "letter-good"
+                  , good
                   )
-                , ( "letter-incorrect"
-                  , Set.member letter badGuesses
+                , ( "letter-bad"
+                  , bad
                   )
                 ]
     in
-        button [ onClick (ChooseLetter letter), classes ] [ text <| String.fromChar letter ]
-
-
-word : Model -> Html Msg
-word { word, goodGuesses } =
-    div [] [ text <| maskWord word goodGuesses ]
+        button
+            [ onClick <| ChooseLetter letter
+            , disabled <| good || bad
+            , class
+            ]
+            [ text <| String.fromChar letter ]
 
 
 maskWord : String -> Set Char -> String
