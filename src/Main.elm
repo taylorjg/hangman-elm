@@ -3,7 +3,8 @@ port module Main exposing (..)
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (class, classList, disabled)
 import Html.Events exposing (onClick, on, keyCode)
-import Set exposing (..)
+import Set exposing (Set)
+import String
 import Char
 
 
@@ -15,13 +16,31 @@ alphabet =
     String.toList "ABCDEFGHIJKLMOPQRSTUVWXYZ"
 
 
+maxLives : Int
+maxLives =
+    11
+
+
 type alias Flags =
     { version : String
     }
 
 
+type GameState
+    = InProgress
+    | GameOver
+
+
+type Outcome
+    = Won
+    | Lost
+
+
 type alias Model =
     { version : String
+    , gameState : GameState
+    , outcome : Maybe Outcome
+    , remainingLives : Int
     , word : String
     , goodGuesses : Set Char
     , badGuesses : Set Char
@@ -30,7 +49,7 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model flags.version "ELM" Set.empty Set.empty
+    ( Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty
     , Cmd.none
     )
 
@@ -83,25 +102,43 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChooseLetter letter ->
-            let
-                choiceDisposition =
-                    getChoiceDisposition model letter
+            if model.gameState /= InProgress then
+                ( model, Cmd.none )
+            else
+                let
+                    choiceDisposition =
+                        getChoiceDisposition model letter
 
-                newModel =
-                    { model
-                        | goodGuesses =
-                            if choiceDisposition == Correct then
-                                Set.insert letter model.goodGuesses
-                            else
-                                model.goodGuesses
-                        , badGuesses =
-                            if choiceDisposition == Incorrect then
-                                Set.insert letter model.badGuesses
-                            else
-                                model.badGuesses
-                    }
-            in
-                ( newModel, Cmd.none )
+                    newGoodGuesses =
+                        if choiceDisposition == Correct then
+                            Set.insert letter model.goodGuesses
+                        else
+                            model.goodGuesses
+
+                    ( newBadGuesses, newRemainingLives ) =
+                        if choiceDisposition == Incorrect then
+                            ( Set.insert letter model.badGuesses, model.remainingLives - 1 )
+                        else
+                            ( model.badGuesses, model.remainingLives )
+
+                    ( newGameState, newOutcome ) =
+                        if (String.toList >> Set.fromList >> Set.size) model.word == Set.size newGoodGuesses then
+                            ( GameOver, Just Won )
+                        else if (newRemainingLives == 0) then
+                            ( GameOver, Just Lost )
+                        else
+                            ( model.gameState, model.outcome )
+
+                    newModel =
+                        { model
+                            | gameState = newGameState
+                            , outcome = newOutcome
+                            , goodGuesses = newGoodGuesses
+                            , badGuesses = newBadGuesses
+                            , remainingLives = newRemainingLives
+                        }
+                in
+                    ( newModel, Cmd.none )
 
         BodyKeyPress code ->
             let

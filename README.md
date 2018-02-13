@@ -9,15 +9,15 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 
 * ~~correctly chosen letters should have disabled green buttons~~
 * ~~incorrectly chosen letters should have disabled red buttons~~
-* add GameState type (InProgress / GameOver)
-* only process ChooseLetter msg when InProgress
+* ~~add GameState type (InProgress / GameOver)~~
+* ~~only process ChooseLetter msg when InProgress~~
 * when GameOver, display a NewGame button
-* add NewGame msg and send it on NewGame button click
-* handle NewGame msg - choose a random word from a small hardcoded dictionary
-* choose a random word on startup too
-* add number of lives count
+* add ChooseWord msg and send it on NewGame button click
+* handle ChooseWord msg by choosing a random word from a small hardcoded dictionary (effect)
+* do ChooseWord on startup
+* ~~add number of lives count~~
 * display remaining lives count
-* add Outcome type (None / Won / Lost)
+* ~~add Outcome type (Won | Lost) and model field of type Maybe Outcome~~
 * ~~add keyboard support for A-Z buttons~~
 * ~~ignore non A-Z keyboard input~~
 * set focus to NewGame button when displaying it
