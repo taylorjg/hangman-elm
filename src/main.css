@@ -1,22 +1,41 @@
 body {
-  font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
-  text-align: center;
-  color: #293c4b;
+  padding: 0;
+  font-family: sans-serif;
 }
 
-h1 {
-  font-size: 30px;
-}
-
-img {
-  margin: 20px 0;
-  max-width: 200px;
+.app {
+  text-align: center;  
 }
 
 .version {
+  margin: 10px;
+  font-size: small;
+  font-style: italic; 
+}
+
+.remainingLives {
   font-size: smaller;
-  font-style: italic;
+}
+
+.word {
+  font-family: Courier New, Courier, monospace;
+	line-height: 30px;
+}
+
+.word-loading {
+	font-size: small;
+	font-style: italic;
+	line-height: 30px;
+}
+
+.word-loading img {
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+.letters-row:last-child {
+  margin-bottom: 10px;
 }
 
 .letter {
