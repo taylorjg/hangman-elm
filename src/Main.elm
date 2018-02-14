@@ -155,14 +155,22 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [] <|
-        viewVersion model
-            :: viewWord model
-            :: viewLetters model
+        List.map (\vf -> vf model)
+            [ viewVersion
+            , viewRemianingLives
+            , viewWord
+            , viewLetters
+            ]
+
+
+viewRemianingLives : Model -> Html Msg
+viewRemianingLives { remainingLives } =
+    div [] [ text <| "Remaining lives: " ++ (toString remainingLives) ]
 
 
 viewVersion : Model -> Html Msg
 viewVersion { version } =
-    div [ class "version" ] [ text version ]
+    div [ class "version" ] [ text <| "version: " ++ version ]
 
 
 viewWord : Model -> Html Msg
@@ -170,9 +178,9 @@ viewWord { word, goodGuesses } =
     div [] [ text <| maskWord word goodGuesses ]
 
 
-viewLetters : Model -> List (Html Msg)
+viewLetters : Model -> Html Msg
 viewLetters model =
-    List.map (viewLetter model) alphabet
+    div [] <| List.map (viewLetter model) alphabet
 
 
 viewLetter : Model -> Char -> Html Msg

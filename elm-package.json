@@ -1,5 +1,5 @@
 {
-    "version": "0.0.13",
+    "version": "0.0.14",
     "summary": "Hangman in Elm",
     "repository": "https://github.com/taylorjg/hangman-elm.git",
     "license": "MIT",

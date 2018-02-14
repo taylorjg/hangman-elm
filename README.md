@@ -16,7 +16,7 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * handle ChooseWord msg by choosing a random word from a small hardcoded dictionary (effect)
 * do ChooseWord on startup
 * ~~add number of lives count~~
-* display remaining lives count
+* ~~display remaining lives count~~
 * ~~add Outcome type (Won | Lost) and model field of type Maybe Outcome~~
 * ~~add keyboard support for A-Z buttons~~
 * ~~ignore non A-Z keyboard input~~
