@@ -8,9 +8,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "elm-package.json" }}
-            - v1-dependencies-
+          key: dependencies-{{ checksum "elm-package.json" }}
       - run: npx elm-app build
       - run: npx elm-app test
       - save_cache:
