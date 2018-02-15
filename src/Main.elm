@@ -1,11 +1,13 @@
 port module Main exposing (..)
 
 import Html exposing (Html, button, div, p, text)
-import Html.Attributes exposing (class, classList, disabled)
+import Html.Attributes exposing (class, classList, disabled, id)
 import Html.Events exposing (on, onClick, keyCode)
 import Set exposing (Set)
 import String
 import Char
+import Dom
+import Task
 
 
 -- MODEL
@@ -49,9 +51,7 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty
-    , Cmd.none
-    )
+    Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty ! [ Cmd.none ]
 
 
 type LetterDisposition
@@ -97,19 +97,18 @@ type Msg
     = ChooseWord
     | ChooseLetter Char
     | BodyKeyPress Int
+    | FocusResult (Result Dom.Error ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChooseWord ->
-            ( Model model.version InProgress Nothing maxLives "ELM" Set.empty Set.empty
-            , Cmd.none
-            )
+            Model model.version InProgress Nothing maxLives "ELM" Set.empty Set.empty ! [ Cmd.none ]
 
         ChooseLetter letter ->
             if model.gameState /= InProgress then
-                ( model, Cmd.none )
+                model ! []
             else
                 let
                     choiceDisposition =
@@ -143,8 +142,14 @@ update msg model =
                             , badGuesses = newBadGuesses
                             , remainingLives = newRemainingLives
                         }
+
+                    command =
+                        if newGameState == GameOver then
+                            Task.attempt FocusResult (Dom.focus "btnNewGame")
+                        else
+                            Cmd.none
                 in
-                    ( newModel, Cmd.none )
+                    ( newModel, command )
 
         BodyKeyPress code ->
             let
@@ -152,6 +157,9 @@ update msg model =
                     (Char.fromCode >> Char.toUpper >> ChooseLetter) code
             in
                 update msg model
+
+        FocusResult _ ->
+            model ! []
 
 
 
@@ -247,7 +255,7 @@ viewControlPanel { gameState, outcome } =
         in
             div []
                 [ p [] [ text outcomeText ]
-                , button [ onClick ChooseWord ] [ text "New Game" ]
+                , button [ onClick ChooseWord, id "btnNewGame" ] [ text "New Game" ]
                 ]
     else
         div [] []

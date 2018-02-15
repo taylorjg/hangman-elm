@@ -13,11 +13,10 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~add GameState type (InProgress / GameOver)~~
 * ~~only process ChooseLetter msg when InProgress~~
 * ~~when GameOver, display a NewGame button~~
-* set focus to NewGame button when displaying it
+* ~~set focus to NewGame button when displaying it~~
 * ~~add ChooseWord msg and send it on NewGame button click~~
 * ~~handle ChooseWord msg resetting game state~~
-* send ChooseWord msg on startup
-* enhance handling of ChooseWord msg to choose a random word
+* enhance ChooseWord msg to choose a random word from local dictionary
 * ~~add number of lives count~~
 * ~~display remaining lives count~~
 * ~~add Outcome type (Won | Lost) and model field of type Maybe Outcome~~
@@ -25,6 +24,7 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~ignore non A-Z keyboard input~~
 * display SVG drawing of gallows
 * get a random word via an AJAX call (add new ChoosingWord GameState)
+* choose random word on startup
 * display spinner whilst AJAX call is outstanding
 * display error panel for AJAX errors
 * handle AJAX errors by falling back to local dictionary again
