@@ -1,8 +1,8 @@
 port module Main exposing (..)
 
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, button, div, p, text)
 import Html.Attributes exposing (class, classList, disabled)
-import Html.Events exposing (onClick, on, keyCode)
+import Html.Events exposing (on, onClick, keyCode)
 import Set exposing (Set)
 import String
 import Char
@@ -160,6 +160,7 @@ view model =
             , viewRemianingLives
             , viewWord
             , viewLetters
+            , viewControlPanel
             ]
 
 
@@ -176,11 +177,6 @@ viewVersion { version } =
 viewWord : Model -> Html Msg
 viewWord { word, goodGuesses } =
     div [ class "word" ] [ text <| maskWord word goodGuesses ]
-
-
-slice : Int -> Int -> List a -> List a
-slice from to list =
-    (List.drop from >> List.take (to - from)) list
 
 
 viewLetters : Model -> Html Msg
@@ -228,6 +224,29 @@ viewLetter model letter =
             [ text <| String.fromChar letter ]
 
 
+viewControlPanel : Model -> Html Msg
+viewControlPanel { gameState, outcome } =
+    if gameState == GameOver then
+        let
+            outcomeText =
+                case outcome of
+                    Just Won ->
+                        "You won!"
+
+                    Just Lost ->
+                        "You lost!"
+
+                    Nothing ->
+                        "?"
+        in
+            div []
+                [ p [] [ text outcomeText ]
+                , button [] [ text "New Game" ]
+                ]
+    else
+        div [] []
+
+
 maskWord : String -> Set Char -> String
 maskWord word goodGuesses =
     String.map
@@ -238,6 +257,11 @@ maskWord word goodGuesses =
                 '-'
         )
         word
+
+
+slice : Int -> Int -> List a -> List a
+slice from to list =
+    (List.drop from >> List.take (to - from)) list
 
 
 
