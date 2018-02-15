@@ -94,13 +94,19 @@ getChoiceDisposition { word } letter =
 
 
 type Msg
-    = ChooseLetter Char
+    = ChooseWord
+    | ChooseLetter Char
     | BodyKeyPress Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ChooseWord ->
+            ( Model model.version InProgress Nothing maxLives "ELM" Set.empty Set.empty
+            , Cmd.none
+            )
+
         ChooseLetter letter ->
             if model.gameState /= InProgress then
                 ( model, Cmd.none )
@@ -241,7 +247,7 @@ viewControlPanel { gameState, outcome } =
         in
             div []
                 [ p [] [ text outcomeText ]
-                , button [] [ text "New Game" ]
+                , button [ onClick ChooseWord ] [ text "New Game" ]
                 ]
     else
         div [] []
