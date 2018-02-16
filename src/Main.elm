@@ -17,7 +17,8 @@ import Task
 
 alphabet : List Char
 alphabet =
-    String.toList "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    List.range (Char.toCode 'A') (Char.toCode 'Z')
+        |> List.map Char.fromCode
 
 
 words : Array String
@@ -241,10 +242,13 @@ viewWord { word, goodGuesses } =
 viewLetters : Model -> Html Msg
 viewLetters model =
     let
+        alphabetArray =
+            Array.fromList alphabet
+
         rows =
-            [ slice 0 9 alphabet
-            , slice 9 18 alphabet
-            , slice 18 26 alphabet
+            [ Array.toList <| Array.slice 0 9 alphabetArray
+            , Array.toList <| Array.slice 9 18 alphabetArray
+            , Array.toList <| Array.slice 18 26 alphabetArray
             ]
     in
         div [] <| List.map (viewLettersRow model) rows
@@ -316,11 +320,6 @@ maskWord word goodGuesses =
                 '-'
         )
         word
-
-
-slice : Int -> Int -> List a -> List a
-slice from to list =
-    (List.drop from >> List.take (to - from)) list
 
 
 

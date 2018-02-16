@@ -18,7 +18,6 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~handle ChooseWord msg resetting game state~~
 * ~~enhance ChooseWord msg to choose a random word from local dictionary~~
 * ~~choose random word on startup~~
-* change alphabet to be an Array instead of a List
 * ~~add number of lives count~~
 * ~~display remaining lives count~~
 * ~~add Outcome type (Won | Lost) and model field of type Maybe Outcome~~
