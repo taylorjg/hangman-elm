@@ -4,9 +4,11 @@ import Html exposing (Html, button, div, p, text)
 import Html.Attributes exposing (class, classList, disabled, id)
 import Html.Events exposing (on, onClick, keyCode)
 import Set exposing (Set)
+import Array exposing (Array)
 import String
 import Char
 import Dom
+import Random
 import Task
 
 
@@ -15,7 +17,31 @@ import Task
 
 alphabet : List Char
 alphabet =
-    String.toList "ABCDEFGHIJKLMOPQRSTUVWXYZ"
+    String.toList "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+words : Array String
+words =
+    [ "elm"
+    , "react"
+    , "redux"
+    , "angular"
+    , "ember"
+    , "jasmine"
+    , "mocha"
+    , "enzyme"
+    , "javascript"
+    , "ecmascript"
+    , "haskell"
+    , "pascal"
+    , "scala"
+    , "clojure"
+    , "scheme"
+    , "typescript"
+    , "fortran"
+    ]
+        |> Array.fromList
+        |> Array.map String.toUpper
 
 
 maxLives : Int
@@ -51,7 +77,7 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty ! [ Cmd.none ]
+    Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty ! [ chooseWordCmd ]
 
 
 type LetterDisposition
@@ -95,16 +121,35 @@ getChoiceDisposition { word } letter =
 
 type Msg
     = ChooseWord
+    | ChooseWordResult String
     | ChooseLetter Char
     | BodyKeyPress Int
     | FocusResult (Result Dom.Error ())
+
+
+chooseWordCmd : Cmd Msg
+chooseWordCmd =
+    let
+        wordGenerator =
+            Random.map indexToWord indexGenerator
+
+        indexToWord =
+            (\index -> Maybe.withDefault "ELM" <| Array.get index words)
+
+        indexGenerator =
+            Random.int 0 <| (Array.length words) - 1
+    in
+        Random.generate ChooseWordResult wordGenerator
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChooseWord ->
-            Model model.version InProgress Nothing maxLives "ELM" Set.empty Set.empty ! [ Cmd.none ]
+            ( model, chooseWordCmd )
+
+        ChooseWordResult word ->
+            Model model.version InProgress Nothing maxLives word Set.empty Set.empty ! [ Cmd.none ]
 
         ChooseLetter letter ->
             if model.gameState /= InProgress then
@@ -143,13 +188,13 @@ update msg model =
                             , remainingLives = newRemainingLives
                         }
 
-                    command =
+                    cmd =
                         if newGameState == GameOver then
                             Task.attempt FocusResult (Dom.focus "btnNewGame")
                         else
                             Cmd.none
                 in
-                    ( newModel, command )
+                    ( newModel, cmd )
 
         BodyKeyPress code ->
             let

@@ -103,21 +103,21 @@ all =
                             , goodGuesses = Set.empty
                             , badGuesses = "ABCDFGHIJKZ" |> String.toList >> Set.fromList
                             }
-            , test "ChooseWord resets the state" <|
+            , test "ChooseWordResult starts a new game" <|
                 \_ ->
                     { initialState
                         | gameState = GameOver
                         , outcome = Just Won
                         , goodGuesses = "ELM" |> String.toList >> Set.fromList
                     }
-                        |> update ChooseWord
+                        |> update (ChooseWordResult "REACT")
                         |> Tuple.first
                         |> Expect.equal
                             { version = flags.version
                             , gameState = InProgress
                             , outcome = Nothing
                             , remainingLives = maxLives
-                            , word = "ELM"
+                            , word = "REACT"
                             , goodGuesses = Set.empty
                             , badGuesses = Set.empty
                             }

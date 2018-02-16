@@ -16,7 +16,9 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~set focus to NewGame button when displaying it~~
 * ~~add ChooseWord msg and send it on NewGame button click~~
 * ~~handle ChooseWord msg resetting game state~~
-* enhance ChooseWord msg to choose a random word from local dictionary
+* ~~enhance ChooseWord msg to choose a random word from local dictionary~~
+* ~~choose random word on startup~~
+* change alphabet to be an Array instead of a List
 * ~~add number of lives count~~
 * ~~display remaining lives count~~
 * ~~add Outcome type (Won | Lost) and model field of type Maybe Outcome~~
@@ -24,12 +26,25 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~ignore non A-Z keyboard input~~
 * display SVG drawing of gallows
 * get a random word via an AJAX call (add new ChoosingWord GameState)
-* choose random word on startup
 * display spinner whilst AJAX call is outstanding
 * display error panel for AJAX errors
 * handle AJAX errors by falling back to local dictionary again
 * add view-related unit tests
-* add an update-related fuzz test 
+* add an update-related fuzz test
+* split Main.elm into modules
+
+# Elm Features Used
+
+Even though this is only a small app, it covers (or will cover) a lot of Elm features:
+
+* ~~Passing in data via flags~~
+* ~~Detecting DOM body keypress events via a port~~
+* Effects: ~~DOM.focus~~, ~~Random~~, Http
+* ~~Task~~
+* SVG
+* ~~Unit tests~~
+* ~~CI/CD on CircleCI~~
+* ~~Deployment to Heroku~~
 
 # Installation
 
