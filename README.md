@@ -25,7 +25,7 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~ignore non A-Z keyboard input~~
 * ~~display SVG drawing of gallows~~
 * ~~get a random word via an AJAX call~~
-* handle AJAX errors by falling back to local dictionary again
+* ~~handle AJAX errors by falling back to local dictionary again~~
 * display error panel for AJAX errors
 * display spinner whilst AJAX call is outstanding (add new ChoosingWord GameState)
 * add view-related unit tests

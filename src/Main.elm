@@ -49,6 +49,11 @@ fallbackWords =
         |> Array.map String.toUpper
 
 
+lastFallbackWordIndex : Int
+lastFallbackWordIndex =
+    Array.length fallbackWords - 1
+
+
 maxLives : Int
 maxLives =
     11
@@ -60,7 +65,8 @@ type alias Flags =
 
 
 type GameState
-    = InProgress
+    = ChoosingWord
+    | InProgress
     | GameOver
 
 
@@ -82,7 +88,7 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty, chooseWordCmd )
+    ( Model flags.version ChoosingWord Nothing maxLives "" Set.empty Set.empty, chooseWordCmd )
 
 
 type LetterDisposition
@@ -127,7 +133,6 @@ getChoiceDisposition { word } letter =
 type Msg
     = ChooseWord
     | ChooseWordResult (Result Http.Error String)
-    | ChooseWordFallbackResult String
     | ChooseLetter Char
     | BodyKeyPress Int
     | FocusResult (Result Dom.Error ())
@@ -150,35 +155,30 @@ decodeWord =
 chooseWordFallbackCmd : Cmd Msg
 chooseWordFallbackCmd =
     let
-        wordGenerator =
-            Random.map lookupWord indexGenerator
-
-        lookupWord =
-            (\index -> Array.get index fallbackWords |> Maybe.withDefault "ELM")
-
-        indexGenerator =
-            Random.int 0 <| (Array.length fallbackWords) - 1
+        generator =
+            Random.int 0 lastFallbackWordIndex
+                |> Random.map (flip Array.get fallbackWords)
+                |> Random.map (Maybe.withDefault "ELM")
+                |> Random.map Ok
     in
-        Random.generate ChooseWordFallbackResult wordGenerator
+        Random.generate ChooseWordResult generator
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChooseWord ->
-            ( model, chooseWordCmd )
+            ( Model model.version ChoosingWord Nothing maxLives "" Set.empty Set.empty, chooseWordCmd )
 
         ChooseWordResult (Ok word) ->
             ( Model model.version InProgress Nothing maxLives word Set.empty Set.empty, Cmd.none )
 
         ChooseWordResult (Err _) ->
-            -- If there was a Random.toTask, we could compose
-            -- the Random operation with the Http operation.
+            -- It would be nice to compose the Http and Random effects
+            -- but Random has state (seed) so we would have to add seed
+            -- to our model. This is relevant:
             -- https://github.com/elm-lang/core/issues/924
             ( model, chooseWordFallbackCmd )
-
-        ChooseWordFallbackResult word ->
-            ( Model model.version InProgress Nothing maxLives word Set.empty Set.empty, Cmd.none )
 
         ChooseLetter letter ->
             if

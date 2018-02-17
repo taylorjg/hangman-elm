@@ -13,7 +13,7 @@ all =
             { version = "1" }
 
         initialState =
-            init flags |> Tuple.first
+            Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty
     in
         describe "Tests for the update function"
             [ test "Choosing a correct letter" <|
