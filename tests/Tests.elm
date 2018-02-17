@@ -44,6 +44,23 @@ all =
                             , goodGuesses = Set.empty
                             , badGuesses = Set.singleton 'B'
                             }
+            , test "Ignore repeated incorrect letter" <|
+                \_ ->
+                    { initialState
+                        | badGuesses = Set.singleton 'B'
+                        , remainingLives = maxLives - 1
+                    }
+                        |> update (ChooseLetter 'B')
+                        |> Tuple.first
+                        |> Expect.equal
+                            { version = flags.version
+                            , gameState = InProgress
+                            , outcome = Nothing
+                            , remainingLives = maxLives - 1
+                            , word = "ELM"
+                            , goodGuesses = Set.empty
+                            , badGuesses = Set.singleton 'B'
+                            }
             , test "Choosing an invalid character" <|
                 \_ ->
                     initialState

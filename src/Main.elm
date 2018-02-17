@@ -155,7 +155,12 @@ update msg model =
             Model model.version InProgress Nothing maxLives word Set.empty Set.empty ! [ Cmd.none ]
 
         ChooseLetter letter ->
-            if model.gameState /= InProgress then
+            if
+                model.gameState
+                    /= InProgress
+                    || Set.member letter model.goodGuesses
+                    || Set.member letter model.badGuesses
+            then
                 model ! []
             else
                 let
