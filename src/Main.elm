@@ -127,7 +127,6 @@ getChoiceDisposition { word } letter =
 type Msg
     = ChooseWord
     | ChooseWordResult (Result Http.Error String)
-    | ChooseWordFallback
     | ChooseWordFallbackResult String
     | ChooseLetter Char
     | BodyKeyPress Int
@@ -173,9 +172,9 @@ update msg model =
             ( Model model.version InProgress Nothing maxLives word Set.empty Set.empty, Cmd.none )
 
         ChooseWordResult (Err _) ->
-            model ! []
-
-        ChooseWordFallback ->
+            -- If there was a Random.toTask, we could compose
+            -- the Random operation with the Http operation.
+            -- https://github.com/elm-lang/core/issues/924
             ( model, chooseWordFallbackCmd )
 
         ChooseWordFallbackResult word ->
