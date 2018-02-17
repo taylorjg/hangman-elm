@@ -313,8 +313,16 @@ viewVersion { version } =
 
 
 viewWord : Model -> Html Msg
-viewWord { word, goodGuesses } =
-    div [ class "word" ] [ text <| maskWord word goodGuesses ]
+viewWord { word, goodGuesses, gameState } =
+    case gameState of
+        ChoosingWord ->
+            div [] [ text "(choosing a word...)" ]
+
+        InProgress ->
+            div [ class "word" ] [ text <| maskWord word goodGuesses ]
+
+        GameOver ->
+            div [ class "word" ] [ text word ]
 
 
 viewLetters : Model -> Html Msg
