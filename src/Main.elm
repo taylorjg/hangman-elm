@@ -297,10 +297,10 @@ svgChildrenDead =
 
 
 viewGallows : Model -> Html Msg
-viewGallows { badGuesses, gameState } =
+viewGallows { badGuesses, outcome } =
     let
         svgChildren =
-            if gameState == GameOver then
+            if outcome == Just Lost then
                 svgChildrenDead
             else
                 svgChildrenAlive
