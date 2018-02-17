@@ -23,7 +23,7 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~add Outcome type (Won | Lost) and model field of type Maybe Outcome~~
 * ~~add keyboard support for A-Z buttons~~
 * ~~ignore non A-Z keyboard input~~
-* display SVG drawing of gallows
+* ~~display SVG drawing of gallows~~
 * get a random word via an AJAX call (add new ChoosingWord GameState)
 * display spinner whilst AJAX call is outstanding
 * display error panel for AJAX errors

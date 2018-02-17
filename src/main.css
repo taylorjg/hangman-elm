@@ -52,3 +52,47 @@ body {
   color: #ff0000;
   background-color: #ff000020;
 }
+
+#gallows {
+	background-color: aliceblue;
+	margin-bottom: 10px;
+}
+
+@media (max-width: 1023px) and (orientation: portrait) {
+	#gallows {
+		width: 200px;
+		height: 200px;
+	}
+}
+
+@media (max-width: 1023px) and (orientation: landscape) {
+	#gallows {
+		width: 150px;
+		height: 150px;
+	}
+}
+
+@media (min-width: 1024px) {
+	#gallows {
+		width: 300px;
+		height: 300px;
+	}
+}
+
+line {
+	stroke: black;
+	stroke-width: 2;
+	stroke-linecap: round;
+}
+
+circle {
+	stroke: black;
+	stroke-width: 2;
+	fill-opacity: 0;
+}
+
+path {
+	stroke: black;
+	stroke-width: 2;
+	fill-opacity: 0;
+}

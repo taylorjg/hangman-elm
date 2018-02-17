@@ -10,6 +10,8 @@ import Char
 import Dom
 import Random
 import Task
+import Svg exposing (Svg, svg, line, circle, path)
+import Svg.Attributes exposing (viewBox, x1, y1, x2, y2, cx, cy, r, d)
 
 
 -- MODEL
@@ -215,18 +217,63 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "app" ] <|
-        List.map (\vf -> vf model)
+        List.map (\v -> v model)
             [ viewVersion
-            , viewRemianingLives
+            , viewRemainingLives
+            , viewGallows
             , viewWord
             , viewLetters
             , viewControlPanel
             ]
 
 
-viewRemianingLives : Model -> Html Msg
-viewRemianingLives { remainingLives } =
-    div [ class "remainingLives" ] [ text <| "Remaining lives: " ++ (toString remainingLives) ]
+viewRemainingLives : Model -> Html Msg
+viewRemainingLives { remainingLives } =
+    p [ class "remainingLives" ] [ text <| "Remaining lives: " ++ (toString remainingLives) ]
+
+
+svgChildrenAlive : List (Svg Msg)
+svgChildrenAlive =
+    [ line [ x1 "50", y1 "280", x2 "250", y2 "280" ] []
+    , line [ x1 "200", y1 "280", x2 "200", y2 "50" ] []
+    , line [ x1 "200", y1 "50", x2 "100", y2 "50" ] []
+    , line [ x1 "160", y1 "50", x2 "200", y2 "90" ] []
+    , line [ x1 "100", y1 "50", x2 "100", y2 "80" ] []
+    , circle [ cx "100", cy "95", r "15" ] []
+    , line [ x1 "100", y1 "110", x2 "100", y2 "175" ] []
+    , line [ x1 "100", y1 "130", x2 "70", y2 "140" ] []
+    , line [ x1 "100", y1 "130", x2 "130", y2 "140" ] []
+    , line [ x1 "100", y1 "175", x2 "65", y2 "215" ] []
+    , line [ x1 "100", y1 "175", x2 "135", y2 "215" ] []
+    ]
+
+
+svgChildrenDead : List (Svg Msg)
+svgChildrenDead =
+    [ line [ x1 "50", y1 "280", x2 "250", y2 "280" ] []
+    , line [ x1 "200", y1 "280", x2 "200", y2 "50" ] []
+    , line [ x1 "200", y1 "50", x2 "100", y2 "50" ] []
+    , line [ x1 "160", y1 "50", x2 "200", y2 "90" ] []
+    , line [ x1 "100", y1 "50", x2 "100", y2 "80" ] []
+    , circle [ cx "100", cy "95", r "15" ] []
+    , line [ x1 "100", y1 "110", x2 "95", y2 "175" ] []
+    , path [ d "M 98 130 A 80 80 1 0 0 90 168" ] []
+    , path [ d "M 99 130 A 80 80 0 0 1 107 170" ] []
+    , path [ d "M 95 175 A 80 72 1 0 0 90 228" ] []
+    , path [ d "M 95 175 A 40 60 0 0 1 92 238" ] []
+    ]
+
+
+viewGallows : Model -> Html Msg
+viewGallows { badGuesses, gameState } =
+    let
+        svgChildren =
+            if gameState == GameOver then
+                svgChildrenDead
+            else
+                svgChildrenAlive
+    in
+        svg [ id "gallows", viewBox "0 0 300 300" ] <| List.take (Set.size badGuesses) svgChildren
 
 
 viewVersion : Model -> Html Msg
