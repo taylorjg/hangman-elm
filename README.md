@@ -24,10 +24,10 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~add keyboard support for A-Z buttons~~
 * ~~ignore non A-Z keyboard input~~
 * ~~display SVG drawing of gallows~~
-* get a random word via an AJAX call (add new ChoosingWord GameState)
-* display spinner whilst AJAX call is outstanding
-* display error panel for AJAX errors
+* ~~get a random word via an AJAX call~~
 * handle AJAX errors by falling back to local dictionary again
+* display error panel for AJAX errors
+* display spinner whilst AJAX call is outstanding (add new ChoosingWord GameState)
 * add view-related unit tests
 * add an update-related fuzz test
 * split Main.elm into modules
@@ -36,14 +36,14 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 
 Even though this is only a small app, it covers (or will cover) a lot of Elm features:
 
-* ~~Passing in data via flags~~
-* ~~Detecting DOM body keypress events via a port~~
-* Effects: ~~DOM.focus~~, ~~Random~~, Http
-* ~~Task~~
+* Passing in data via flags
+* Detecting DOM body keypress events via a port
+* Effects: DOM.focus, Random, Http
+* Task
 * SVG
-* ~~Unit tests~~
-* ~~CI/CD on CircleCI~~
-* ~~Deployment to Heroku~~
+* Unit tests
+* CI/CD on CircleCI
+* Deployment to Heroku
 
 # Installation
 

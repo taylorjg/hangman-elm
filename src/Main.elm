@@ -12,6 +12,8 @@ import Random
 import Task
 import Svg exposing (Svg, svg, line, circle, path)
 import Svg.Attributes exposing (viewBox, x1, y1, x2, y2, cx, cy, r, d)
+import Http
+import Json.Decode
 
 
 -- MODEL
@@ -23,8 +25,8 @@ alphabet =
         |> List.map Char.fromCode
 
 
-words : Array String
-words =
+fallbackWords : Array String
+fallbackWords =
     [ "elm"
     , "react"
     , "redux"
@@ -80,7 +82,7 @@ type alias Model =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty ! [ chooseWordCmd ]
+    ( Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty, chooseWordCmd )
 
 
 type LetterDisposition
@@ -124,7 +126,9 @@ getChoiceDisposition { word } letter =
 
 type Msg
     = ChooseWord
-    | ChooseWordResult String
+    | ChooseWordResult (Result Http.Error String)
+    | ChooseWordFallback
+    | ChooseWordFallbackResult String
     | ChooseLetter Char
     | BodyKeyPress Int
     | FocusResult (Result Dom.Error ())
@@ -133,16 +137,30 @@ type Msg
 chooseWordCmd : Cmd Msg
 chooseWordCmd =
     let
-        wordGenerator =
-            Random.map indexToWord indexGenerator
+        request =
+            Http.get "/api/chooseWord" decodeWord
+    in
+        Http.send ChooseWordResult request
 
-        indexToWord =
-            (\index -> Maybe.withDefault "ELM" <| Array.get index words)
+
+decodeWord : Json.Decode.Decoder String
+decodeWord =
+    Json.Decode.at [ "word" ] Json.Decode.string
+
+
+chooseWordFallbackCmd : Cmd Msg
+chooseWordFallbackCmd =
+    let
+        wordGenerator =
+            Random.map lookupWord indexGenerator
+
+        lookupWord =
+            (\index -> Array.get index fallbackWords |> Maybe.withDefault "ELM")
 
         indexGenerator =
-            Random.int 0 <| (Array.length words) - 1
+            Random.int 0 <| (Array.length fallbackWords) - 1
     in
-        Random.generate ChooseWordResult wordGenerator
+        Random.generate ChooseWordFallbackResult wordGenerator
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -151,8 +169,17 @@ update msg model =
         ChooseWord ->
             ( model, chooseWordCmd )
 
-        ChooseWordResult word ->
-            Model model.version InProgress Nothing maxLives word Set.empty Set.empty ! [ Cmd.none ]
+        ChooseWordResult (Ok word) ->
+            ( Model model.version InProgress Nothing maxLives word Set.empty Set.empty, Cmd.none )
+
+        ChooseWordResult (Err _) ->
+            model ! []
+
+        ChooseWordFallback ->
+            ( model, chooseWordFallbackCmd )
+
+        ChooseWordFallbackResult word ->
+            ( Model model.version InProgress Nothing maxLives word Set.empty Set.empty, Cmd.none )
 
         ChooseLetter letter ->
             if

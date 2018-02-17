@@ -127,7 +127,7 @@ all =
                         , outcome = Just Won
                         , goodGuesses = "ELM" |> String.toList >> Set.fromList
                     }
-                        |> update (ChooseWordResult "REACT")
+                        |> update (ChooseWordResult (Ok "REACT"))
                         |> Tuple.first
                         |> Expect.equal
                             { version = flags.version
