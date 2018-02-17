@@ -12,7 +12,7 @@ jobs:
       - run: npx elm-app build
       - run: npx elm-app test
       - save_cache:
-          key: v1-dependencies-{{ checksum "elm-package.json" }}
+          key: dependencies-{{ checksum "elm-package.json" }}
           paths:
             - elm-stuff
             - tests/elm-stuff
