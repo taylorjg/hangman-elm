@@ -1,8 +1,8 @@
 port module Main exposing (..)
 
-import Html exposing (Html, button, div, p, text)
-import Html.Attributes exposing (class, classList, disabled, id)
-import Html.Events exposing (on, onClick, keyCode)
+import Html exposing (Html, button, div, img, p, span, text)
+import Html.Attributes exposing (alt, class, classList, disabled, id, src)
+import Html.Events exposing (onClick)
 import Set exposing (Set)
 import Array exposing (Array)
 import String
@@ -313,16 +313,21 @@ viewVersion { version } =
 
 
 viewWord : Model -> Html Msg
-viewWord { word, goodGuesses, gameState } =
-    case gameState of
-        ChoosingWord ->
-            div [] [ text "(choosing a word...)" ]
+viewWord { gameState, word, goodGuesses } =
+    p []
+        [ case gameState of
+            ChoosingWord ->
+                span [ class "word-loading" ]
+                    [ img [ src "/spinner.gif", alt "Spinner" ] []
+                    , text "(choosing a word...)"
+                    ]
 
-        InProgress ->
-            div [ class "word" ] [ text <| maskWord word goodGuesses ]
+            InProgress ->
+                div [ class "word" ] [ text <| maskWord word goodGuesses ]
 
-        GameOver ->
-            div [ class "word" ] [ text word ]
+            GameOver ->
+                div [ class "word" ] [ text word ]
+        ]
 
 
 viewLetters : Model -> Html Msg

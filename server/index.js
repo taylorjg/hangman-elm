@@ -17,7 +17,6 @@ const isCacheable = filePath => {
 };
 
 const setHeaders = (res, filePath) => {
-  console.log(`filePath: ${filePath}`);
   if (isCacheable(filePath)) {
     res.set('Cache-Control', 'public, max-age=31536000');
   }
