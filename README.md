@@ -18,7 +18,7 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~handle ChooseWord msg resetting game state~~
 * ~~enhance ChooseWord msg to choose a random word from local dictionary~~
 * ~~choose random word on startup~~
-* ~~add number of lives count~~
+* ~~add remaining lives count~~
 * ~~display remaining lives count~~
 * ~~add Outcome type (Won | Lost) and model field of type Maybe Outcome~~
 * ~~add keyboard support for A-Z buttons~~
@@ -27,14 +27,14 @@ This is (or will be) an Elm version of a [hangman React app](https://github.com/
 * ~~get a random word via an AJAX call~~
 * ~~handle AJAX errors by falling back to local dictionary again~~
 * ~~display spinner whilst AJAX call is outstanding~~
-* display error panel for AJAX errors
+* ~~display error panel for AJAX errors~~
 * add view-related unit tests
 * add an update-related fuzz test
 * split Main.elm into modules
 
 # Elm Features Used
 
-Even though this is only a small app, it covers (or will cover) a lot of Elm features:
+Even though this is only a small app, it covers a lot of Elm features:
 
 * Passing in data via flags
 * Detecting DOM body keypress events via a port
@@ -42,8 +42,20 @@ Even though this is only a small app, it covers (or will cover) a lot of Elm fea
 * Task
 * SVG
 * Unit tests
+
+And also:
+
 * CI/CD on CircleCI
 * Deployment to Heroku
+
+# Links
+
+* [Elm Manchester Meetup](https://www.meetup.com/elm-manchester)
+* https://github.com/totallymoney/circleci-elm-compile/blob/master/Dockerfile
+* https://semaphoreci.com/community/tutorials/building-and-testing-web-applications-with-elm
+* https://stackoverflow.com/questions/39652083/how-can-i-add-event-handlers-to-the-body-element-in-elm
+* https://stackoverflow.com/questions/31901397/how-to-set-focus-on-an-element-in-elm
+* https://github.com/elm-lang/core/issues/924
 
 # Installation
 

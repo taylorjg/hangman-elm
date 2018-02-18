@@ -13,7 +13,7 @@ all =
             { version = "1" }
 
         initialState =
-            Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty
+            Model flags.version InProgress Nothing maxLives "ELM" Set.empty Set.empty Nothing
     in
         describe "Tests for the update function"
             [ test "Choosing a correct letter" <|
@@ -29,6 +29,7 @@ all =
                             , word = "ELM"
                             , goodGuesses = Set.singleton 'E'
                             , badGuesses = Set.empty
+                            , errorMessage = Nothing
                             }
             , test "Choosing an incorrect letter" <|
                 \_ ->
@@ -43,6 +44,7 @@ all =
                             , word = "ELM"
                             , goodGuesses = Set.empty
                             , badGuesses = Set.singleton 'B'
+                            , errorMessage = Nothing
                             }
             , test "Ignore repeated incorrect letter" <|
                 \_ ->
@@ -60,6 +62,7 @@ all =
                             , word = "ELM"
                             , goodGuesses = Set.empty
                             , badGuesses = Set.singleton 'B'
+                            , errorMessage = Nothing
                             }
             , test "Choosing an invalid character" <|
                 \_ ->
@@ -74,6 +77,7 @@ all =
                             , word = "ELM"
                             , goodGuesses = Set.empty
                             , badGuesses = Set.empty
+                            , errorMessage = Nothing
                             }
             , test "ignore ChooseLetter when GameOver" <|
                 \_ ->
@@ -88,6 +92,7 @@ all =
                             , word = "ELM"
                             , goodGuesses = Set.empty
                             , badGuesses = Set.empty
+                            , errorMessage = Nothing
                             }
             , test "choosing last good letter => GameOver / Won" <|
                 \_ ->
@@ -102,6 +107,7 @@ all =
                             , word = "ELM"
                             , goodGuesses = "ELM" |> String.toList >> Set.fromList
                             , badGuesses = Set.empty
+                            , errorMessage = Nothing
                             }
             , test "choosing bad letter when only one life remains => GameOver / Lost" <|
                 \_ ->
@@ -119,13 +125,13 @@ all =
                             , word = "ELM"
                             , goodGuesses = Set.empty
                             , badGuesses = "ABCDFGHIJKZ" |> String.toList >> Set.fromList
+                            , errorMessage = Nothing
                             }
             , test "ChooseWordResult starts a new game" <|
                 \_ ->
                     { initialState
-                        | gameState = GameOver
-                        , outcome = Just Won
-                        , goodGuesses = "ELM" |> String.toList >> Set.fromList
+                        | gameState = ChoosingWord
+                        , word = ""
                     }
                         |> update (ChooseWordResult (Ok "REACT"))
                         |> Tuple.first
@@ -137,5 +143,6 @@ all =
                             , word = "REACT"
                             , goodGuesses = Set.empty
                             , badGuesses = Set.empty
+                            , errorMessage = Nothing
                             }
             ]

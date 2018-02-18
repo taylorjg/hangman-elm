@@ -1,7 +1,7 @@
 port module Main exposing (..)
 
 import Html exposing (Html, button, div, img, p, span, text)
-import Html.Attributes exposing (alt, class, classList, disabled, id, src)
+import Html.Attributes exposing (alt, class, classList, disabled, id, src, title)
 import Html.Events exposing (onClick)
 import Set exposing (Set)
 import Array exposing (Array)
@@ -83,12 +83,13 @@ type alias Model =
     , word : String
     , goodGuesses : Set Char
     , badGuesses : Set Char
+    , errorMessage : Maybe String
     }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( Model flags.version ChoosingWord Nothing maxLives "" Set.empty Set.empty, chooseWordCmd )
+    ( Model flags.version ChoosingWord Nothing maxLives "" Set.empty Set.empty Nothing, chooseWordCmd )
 
 
 type LetterDisposition
@@ -133,6 +134,7 @@ getChoiceDisposition { word } letter =
 type Msg
     = ChooseWord
     | ChooseWordResult (Result Http.Error String)
+    | ChooseWordFallbackResult String
     | ChooseLetter Char
     | BodyKeyPress Int
     | FocusResult (Result Dom.Error ())
@@ -159,26 +161,24 @@ chooseWordFallbackCmd =
             Random.int 0 lastFallbackWordIndex
                 |> Random.map (flip Array.get fallbackWords)
                 |> Random.map (Maybe.withDefault "ELM")
-                |> Random.map Ok
     in
-        Random.generate ChooseWordResult generator
+        Random.generate ChooseWordFallbackResult generator
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChooseWord ->
-            ( Model model.version ChoosingWord Nothing maxLives "" Set.empty Set.empty, chooseWordCmd )
+            ( Model model.version ChoosingWord Nothing maxLives "" Set.empty Set.empty Nothing, chooseWordCmd )
 
         ChooseWordResult (Ok word) ->
-            ( Model model.version InProgress Nothing maxLives word Set.empty Set.empty, Cmd.none )
+            ( { model | gameState = InProgress, word = word }, Cmd.none )
 
-        ChooseWordResult (Err _) ->
-            -- It would be nice to compose the Http and Random effects
-            -- but Random has state (seed) so we would have to add seed
-            -- to our model. This is relevant:
-            -- https://github.com/elm-lang/core/issues/924
-            ( model, chooseWordFallbackCmd )
+        ChooseWordResult (Err httpError) ->
+            ( { model | errorMessage = Just <| toString httpError }, chooseWordFallbackCmd )
+
+        ChooseWordFallbackResult word ->
+            ( { model | gameState = InProgress, word = word }, Cmd.none )
 
         ChooseLetter letter ->
             if
@@ -255,6 +255,7 @@ view model =
             , viewWord
             , viewLetters
             , viewControlPanel
+            , viewErrorPanel
             ]
 
 
@@ -399,6 +400,26 @@ viewControlPanel { gameState, outcome } =
                 ]
     else
         div [] []
+
+
+viewErrorPanel : Model -> Html Msg
+viewErrorPanel { errorMessage } =
+    div [ class "error-panel" ] <|
+        case errorMessage of
+            Just errorMessageText ->
+                [ span []
+                    [ img
+                        [ src "/warningTriangle.png"
+                        , alt "Warning triangle"
+                        , title errorMessageText
+                        ]
+                        []
+                    , text "(using a local dictionary due to a server error)"
+                    ]
+                ]
+
+            Nothing ->
+                []
 
 
 maskWord : String -> Set Char -> String
