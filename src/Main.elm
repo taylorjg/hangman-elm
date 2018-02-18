@@ -25,6 +25,19 @@ alphabet =
         |> List.map Char.fromCode
 
 
+letterRows : List (List Char)
+letterRows =
+    let
+        alphabetArray =
+            Array.fromList alphabet
+    in
+        List.map (\( from, to ) -> (Array.slice from to >> Array.toList) alphabetArray)
+            [ ( 0, 9 )
+            , ( 9, 18 )
+            , ( 18, 26 )
+            ]
+
+
 fallbackWords : Array String
 fallbackWords =
     [ "elm"
@@ -101,7 +114,6 @@ type LetterDisposition
 type ChoiceDisposition
     = Correct
     | Incorrect
-    | Invalid
 
 
 getLetterDisposition : Model -> Char -> LetterDisposition
@@ -116,15 +128,10 @@ getLetterDisposition { goodGuesses, badGuesses } letter =
 
 getChoiceDisposition : Model -> Char -> ChoiceDisposition
 getChoiceDisposition { word } letter =
-    case ( List.member letter alphabet, List.member letter (String.toList word) ) of
-        ( True, True ) ->
-            Correct
-
-        ( True, False ) ->
-            Incorrect
-
-        ( False, _ ) ->
-            Invalid
+    if List.member letter (String.toList word) then
+        Correct
+    else
+        Incorrect
 
 
 
@@ -184,6 +191,7 @@ update msg model =
             if
                 model.gameState
                     /= InProgress
+                    || not (List.member letter alphabet)
                     || Set.member letter model.goodGuesses
                     || Set.member letter model.badGuesses
             then
@@ -333,27 +341,16 @@ viewWord { gameState, word, goodGuesses } =
 
 viewLetters : Model -> Html Msg
 viewLetters model =
-    let
-        alphabetArray =
-            Array.fromList alphabet
-
-        rows =
-            [ Array.toList <| Array.slice 0 9 alphabetArray
-            , Array.toList <| Array.slice 9 18 alphabetArray
-            , Array.toList <| Array.slice 18 26 alphabetArray
-            ]
-    in
-        div [] <|
-            if model.gameState == InProgress then
-                List.map (viewLettersRow model) rows
-            else
-                []
+    if model.gameState == InProgress then
+        div [] <| List.map (viewLettersRow model) letterRows
+    else
+        div [] []
 
 
 viewLettersRow : Model -> List Char -> Html Msg
-viewLettersRow model letters =
+viewLettersRow model letterRow =
     div [ class "lettersRow" ] <|
-        List.map (viewLetter model) letters
+        List.map (viewLetter model) letterRow
 
 
 viewLetter : Model -> Char -> Html Msg
