@@ -343,7 +343,11 @@ viewLetters model =
             , Array.toList <| Array.slice 18 26 alphabetArray
             ]
     in
-        div [] <| List.map (viewLettersRow model) rows
+        div [] <|
+            if model.gameState == InProgress then
+                List.map (viewLettersRow model) rows
+            else
+                []
 
 
 viewLettersRow : Model -> List Char -> Html Msg
