@@ -14,6 +14,22 @@ body {
   font-style: italic; 
 }
 
+@media (max-width: 1024px) and (orientation: landscape) {
+  #panes {
+    width: 100%;
+    display: table; 
+  }
+  #pane1 {
+    width: 40%;
+    display: table-cell;
+  }
+  #pane2 {
+    width: 60%;
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
 .remainingLives {
   font-size: smaller;
 }

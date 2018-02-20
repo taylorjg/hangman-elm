@@ -255,16 +255,26 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "app" ] <|
-        List.map (\v -> v model)
-            [ viewVersion
-            , viewRemainingLives
-            , viewGallows
-            , viewWord
-            , viewLetters
-            , viewControlPanel
-            , viewErrorPanel
+    div [ class "app" ]
+        [ viewVersion model
+        , div [ id "panes" ]
+            [ div [ id "pane1" ]
+                [ viewRemainingLives model
+                , viewGallows model
+                ]
+            , div [ id "pane2" ]
+                [ viewWord model
+                , viewLetters model
+                , viewControlPanel model
+                , viewErrorPanel model
+                ]
             ]
+        ]
+
+
+viewVersion : Model -> Html Msg
+viewVersion { version } =
+    div [ class "version" ] [ text <| "version: " ++ version ]
 
 
 viewRemainingLives : Model -> Html Msg
@@ -314,11 +324,6 @@ viewGallows { badGuesses, outcome } =
                 svgChildrenAlive
     in
         svg [ id "gallows", viewBox "0 0 300 300" ] <| List.take (Set.size badGuesses) svgChildren
-
-
-viewVersion : Model -> Html Msg
-viewVersion { version } =
-    div [ class "version" ] [ text <| "version: " ++ version ]
 
 
 viewWord : Model -> Html Msg
